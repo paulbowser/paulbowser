@@ -1,1 +1,28 @@
- 
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Curb Calculator</title>
+</head>
+<body>
+  <h1>Curb Calculator</h1>
+  <form id="curbForm">
+    <label for="thicknessInput">Thickness (inches):</label>
+    <input type="number" id="thicknessInput" step="0.01" required><br><br>
+    
+    <label for="heightInput">Height (inches):</label>
+    <input type="number" id="heightInput" step="0.01" required><br><br>
+
+    <label for="lengthInput">Length (feet):</label>
+    <input type="number" id="lengthInput" step="0.01" required><br><br>
+
+    <label for="costPerCubicYardInput">Cost Per Cubic Yard ($):</label>
+    <input type="number" id="costPerCubicYardInput" step="0.01" required><br><br>
+    
+    <input type="submit" value="Calculate">
+  </form>
+
+  <div id="results"></div>
+
+  <script src="curbCalculator.js"></script>
+</body>
+</html>
