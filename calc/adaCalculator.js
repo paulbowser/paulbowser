@@ -3,6 +3,7 @@ document.getElementById('circleForm').addEventListener('submit', function(event)
 
   var rad = parseFloat(document.getElementById('radiusInput').value);
   var mcir = parseFloat(document.getElementById('circumferenceInput').value);
+  var cost = parseFloat(document.getElementById('costInput').value);
 
   var pi = Math.PI;
   var area = (pi * rad * rad).toFixed(2);
@@ -10,6 +11,7 @@ document.getElementById('circleForm').addEventListener('submit', function(event)
   var percircu = (mcir / circu).toFixed(2);
   var actsqft = (area * percircu).toFixed(2);
   var cuyd = ((actsqft * 0.5) / 27).toFixed(2);
+  var costPerSqFt = (cost / actsqft).toFixed(2);
 
   var results = "<h2>Results</h2>" +
     "Radius: " + rad + "<br>" +
@@ -18,7 +20,7 @@ document.getElementById('circleForm').addEventListener('submit', function(event)
     "Circumference: " + circu + "<br>" +
     "Percent of Circumference: " + percircu + "<br>" +
     "Actual Sq.Ft.: " + actsqft + "<br>" +
-    "Cubic Yards: " + cuyd;
-
+    "Cubic Yards: " + cuyd + "<br>" +
+    "Cost Per Square Foot: $" + costPerSqFt;
   document.getElementById('results').innerHTML = results;
 });
