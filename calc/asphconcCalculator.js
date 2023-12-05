@@ -1,14 +1,15 @@
 document.getElementById('materialForm').addEventListener('submit', function(event) {
   event.preventDefault();
 
+  var material = document.querySelector('input[name="material"]:checked');
   var width = parseFloat(document.getElementById('widthInput').value);
   var length = parseFloat(document.getElementById('lengthInput').value);
   var depth = parseFloat(document.getElementById('depthInput').value);
-  var material = document.querySelector('input[name="material"]:checked');
 
+  var depthInFeet = depth / 12.0;
   var sqft = width * length;
-  var cuyd = (width * length * depth) / 27;
-  var tons = (width * length * (depth / 110) / 18000);
+  var cuyd = (width * length * depthInFeet) / 27.0;
+  var tons = (150.0 * width * length * depthInFeet) / 2000.0;
 
   var results = "<h2>Results</h2>" +
     "Square Feet: " + sqft + "<br>";
