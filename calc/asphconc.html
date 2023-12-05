@@ -1,1 +1,31 @@
- 
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Material Selection Calculator</title>
+</head>
+<body>
+  <h1>Material Selection Calculator</h1>
+  <form id="materialForm">
+    <label for="widthInput">Enter Width:</label>
+    <input type="number" id="widthInput" required><br><br>
+    
+    <label for="lengthInput">Enter Length:</label>
+    <input type="number" id="lengthInput" required><br><br>
+
+    <label for="depthInput">Enter Depth:</label>
+    <input type="number" id="depthInput" required><br><br>
+
+    <label for="asphaltRadio">Asphalt</label>
+    <input type="radio" id="asphaltRadio" name="material" value="asphalt">
+
+    <label for="concreteRadio">Concrete</label>
+    <input type="radio" id="concreteRadio" name="material" value="concrete"><br><br>
+
+    <input type="submit" value="Calculate">
+  </form>
+
+  <div id="results"></div>
+
+  <script src="asphconcCalculator.js"></script>
+</body>
+</html>
