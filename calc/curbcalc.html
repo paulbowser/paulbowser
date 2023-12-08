@@ -2,22 +2,29 @@
 <html>
 <head>
   <title>Curb Calculator</title>
+  <style>
+    input[type="number"] {
+      font-size: 16px;
+    }
+  </style>
 </head>
 <body>
   <h1>Curb Calculator</h1>
   <form id="curbForm">
-    <label for="thicknessInput">Thickness (inches):</label>
-    <input type="number" id="thicknessInput" step="0.01" required><br><br>
-    
-    <label for="heightInput">Height (inches):</label>
+    <label for="heightInput">Enter Height (inches):</label>
     <input type="number" id="heightInput" step="0.01" required><br><br>
 
-    <label for="lengthInput">Length (feet):</label>
+    <label for="lengthInput">Enter Length (feet):</label>
     <input type="number" id="lengthInput" step="0.01" required><br><br>
-
-    <label for="costPerCubicYardInput">Cost Per Cubic Yard ($):</label>
-    <input type="number" id="costPerCubicYardInput" step="0.01" required><br><br>
     
+    <label for="thicknessInput">Thickness (inches):</label>
+    <input type="number" id="thicknessInput" step="0.01" required><br><br>
+    <!-- Prepopulated value can be added with 'value' attribute -->
+    
+    <label for="costPerLinearFtInput">Cost Per Linear Foot ($):</label>
+    <input type="number" id="costPerLinearFtInput" step="0.01" required value="41.00"><br><br>
+    <!-- Prepopulated value is set to $41.00 -->
+
     <input type="submit" value="Calculate">
   </form>
 
