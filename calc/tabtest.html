@@ -3,13 +3,26 @@
 <head>
     <title>Tabbed Content</title>
     <style>
-        /* Add your CSS styles here */
-        /* Style for tabs */
+        /* Default styles */
         .tab {
             display: none;
         }
         .tab.active {
             display: block;
+        }
+        
+        /* Styles for tabs */
+        .tab-link {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        
+        /* Media query for smartphones */
+        @media (max-width: 768px) {
+            .tab-link {
+                width: 100%;
+            }
         }
     </style>
 </head>
