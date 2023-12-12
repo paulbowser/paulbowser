@@ -15,9 +15,9 @@ document.getElementById('circleForm').addEventListener('submit', function(event)
   var results = "<h2>Results</h2>" +
     "Radius: " + rad + "<br>" +
     "Measured Circle: " + mcir + "<br>" +
-    "Area of Circle: " + area.toFixed(2) + "<br>" +
-    "Circumference: " + circu.toFixed(2) + "<br>" +
-    "Percent of Circumference: " + percircu.toFixed(2) + "<br>" +
+    //"Area of Circle: " + area.toFixed(2) + "<br>" +
+    //"Circumference: " + circu.toFixed(2) + "<br>" +
+    //"Percent of Circumference: " + percircu.toFixed(2) + "<br>" +
     "Actual Sq.Ft.: " + actsqft.toFixed(2) + "<br>" +
     "Total Cost: $" + totalCost.toFixed(2);
 
