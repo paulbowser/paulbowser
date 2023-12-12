@@ -1,1 +1,63 @@
- 
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tabbed Content</title>
+    <style>
+        /* Add your CSS styles here */
+        /* Style for tabs */
+        .tab {
+            display: none;
+        }
+        .tab.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+<div class="tab-container">
+    <button class="tab-link" onclick="openTab(event, 'tab1')">Tab 1</button>
+    <button class="tab-link" onclick="openTab(event, 'tab2')">Tab 2</button>
+    <button class="tab-link" onclick="openTab(event, 'tab3')">Tab 3</button>
+
+    <div id="tab1" class="tab active">
+        <!-- Content for Tab 1 -->
+        <h2>Content of Tab 1</h2>
+        <p>This is the content for Tab 1.</p>
+    </div>
+
+    <div id="tab2" class="tab">
+        <!-- Content for Tab 2 -->
+        <h2>Content of Tab 2</h2>
+        <p>This is the content for Tab 2.</p>
+    </div>
+
+    <div id="tab3" class="tab">
+        <!-- Content for Tab 3 -->
+        <h2>Content of Tab 3</h2>
+        <p>This is the content for Tab 3.</p>
+    </div>
+</div>
+
+<script>
+    // JavaScript function to switch tabs
+    function openTab(evt, tabName) {
+        var i, tabContent, tabLinks;
+
+        tabContent = document.getElementsByClassName("tab");
+        for (i = 0; i < tabContent.length; i++) {
+            tabContent[i].classList.remove("active");
+        }
+
+        tabLinks = document.getElementsByClassName("tab-link");
+        for (i = 0; i < tabLinks.length; i++) {
+            tabLinks[i].classList.remove("active");
+        }
+
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.classList.add("active");
+    }
+</script>
+
+</body>
+</html>
