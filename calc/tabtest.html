@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Tabbed Content</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
         /* Default styles */
         .tab {
@@ -13,21 +14,13 @@
         
         /* Styles for tabs */
         .tab-link {
-            display: inline-block;
+            display: block;
             padding: 10px 15px;
-            margin: 5px;
+            margin-bottom: 5px;
             cursor: pointer;
             border: 1px solid #ccc;
             border-radius: 5px;
             background-color: #f0f0f0;
-        }
-        
-        /* Media query for smartphones */
-        @media (max-width: 768px) {
-            .tab-link {
-                display: block;
-                width: calc(100% - 20px);
-            }
         }
     </style>
 </head>
