@@ -160,39 +160,85 @@ details > summary {
   padding: 6px 0;
   font-weight: 600;
 }
+/* Collapsible sections */
+details > summary.sectionTitle {
+  list-style: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  color: #333;
+  padding: 6px 0;
+  user-select: none;
+}
+
+details > summary.sectionTitle::-webkit-details-marker {
+  display: none;
+}
+
+details > summary.sectionTitle::before {
+  content: "▸";
+  display: inline-block;
+  margin-right: 8px;
+  transform: translateY(-1px);
+  transition: transform 0.12s ease;
+}
+
+details[open] > summary.sectionTitle::before {
+  content: "▾";
+}
+
+/* Keep Sequence from pushing layout around too much */
+details .chips {
+  margin-top: 8px;
+}
+
+.card details {
+  overflow: hidden;
+}
+
+/* Optional: limit expanded Sequence height so buttons don’t get pushed offscreen */
+.card details[open] #chips {
+  max-height: 35vh;
+  overflow: auto;
+}
+
   </style>
 </head>
 <body>
   <div class="wrap">
     <h1>Tap Tracker</h1>
 
-    <div class="card">
-      <div class="row">
-        <div style="flex:2; min-width: 220px;">
-          <input id="optionInput" type="text" inputmode="text"
-                 placeholder="Options (comma separated) e.g. Yes, No"
-                 value="Yes, No" />
-        </div>
-        <div style="flex:1; min-width: 140px;">
-          <button id="genBtn">Generate</button>
-        </div>
+<div class="card">
+  <details open>
+    <summary class="sectionTitle">Counter Settings</summary>
+
+    <div class="row">
+      <div style="flex:2; min-width: 220px;">
+        <input id="optionInput" type="text" inputmode="text"
+               placeholder="Options (comma separated) e.g. Yes, No"
+               value="Yes, No" />
       </div>
-
-      <div class="toolbar" style="margin-top:10px;">
-        <button id="undoBtn">Undo</button>
-        <button id="clearBtn">Clear</button>
-        <button id="exportBtn">Export CSV</button>
-      </div>
-
-      <label class="toggle">
-        <input id="timeToggle" type="checkbox" />
-        Record timestamps (for CSV)
-      </label>
-
-      <div class="footerNote">
-        Tip: add to Home Screen for a full-screen app feel.
+      <div style="flex:1; min-width: 140px;">
+        <button id="genBtn">Generate</button>
       </div>
     </div>
+
+    <div class="toolbar" style="margin-top:10px;">
+      <button id="undoBtn">Undo</button>
+      <button id="clearBtn">Clear</button>
+      <button id="exportBtn">Export CSV</button>
+    </div>
+
+    <label class="toggle">
+      <input id="timeToggle" type="checkbox" />
+      Record timestamps (for CSV)
+    </label>
+
+    <div class="footerNote">
+      Tip: add to Home Screen for a full-screen app feel.
+    </div>
+  </details>
+</div>
 
 <div class="card">
   <div class="muted">Options</div>
@@ -201,7 +247,7 @@ details > summary {
 
 <div class="card">
   <details>
-    <summary class="muted">Sequence (tap × to remove)</summary>
+    <summary class="sectionTitle">Sequence</summary>
     <div id="chips" class="chips"></div>
   </details>
 </div>
