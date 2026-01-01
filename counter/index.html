@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Option Tracker</title>
+<style>
+  body {
+    font-family: system-ui, sans-serif;
+    padding: 20px;
+    max-width: 800px;
+  }
+
+  input {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+  }
+
+  .buttons button {
+    margin: 4px;
+    padding: 10px 14px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+
+  .sequence {
+    margin-top: 15px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    min-height: 40px;
+  }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    background: #eee;
+    margin: 3px;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+
+  .tag button {
+    margin-left: 6px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    font-weight: bold;
+  }
+</style>
+</head>
+<body>
+
+<h2>Option Tracker</h2>
+
+<input id="optionInput" placeholder="Enter options (comma separated), e.g. Yes, No" />
+<button onclick="generateButtons()">Generate Buttons</button>
+
+<div class="buttons" id="buttons"></div>
+
+<h3>Sequence</h3>
+<div class="sequence" id="sequence"></div>
+
+<script>
+let options = [];
+let counts = {};
+let sequence = [];
+
+function generateButtons() {
+  options = document.getElementById("optionInput").value
+    .split(",")
+    .map(o => o.trim())
+    .filter(o => o.length);
+
+  counts = {};
+  sequence = [];
+
+  const buttonsDiv = document.getElementById("buttons");
+  const sequenceDiv = document.getElementById("sequence");
+
+  buttonsDiv.innerHTML = "";
+  sequenceDiv.innerHTML = "";
+
+  options.forEach(opt => {
+    counts[opt] = 0;
+
+    const btn = document.createElement("button");
+    btn.dataset.option = opt;
+    btn.onclick = () => addOption(opt);
+    buttonsDiv.appendChild(btn);
+  });
+
+  updateButtons();
+}
+
+function addOption(opt) {
+  sequence.push(opt);
+  counts[opt]++;
+  renderSequence();
+  updateButtons();
+}
+
+function removeOption(index) {
+  const opt = sequence[index];
+  sequence.splice(index, 1);
+  counts[opt]--;
+  renderSequence();
+  updateButtons();
+}
+
+function renderSequence() {
+  const sequenceDiv = document.getElementById("sequence");
+  sequenceDiv.innerHTML = "";
+
+  sequence.forEach((opt, i) => {
+    const tag = document.createElement("span");
+    tag.className = "tag";
+    tag.textContent = opt;
+
+    const removeBtn = document.createElement("button");
+    removeBtn.textContent = "×";
+    removeBtn.onclick = () => removeOption(i);
+
+    tag.appendChild(removeBtn);
+    sequenceDiv.appendChild(tag);
+  });
+}
+
+function updateButtons() {
+  document.querySelectorAll(".buttons button").forEach(btn => {
+    const opt = btn.dataset.option;
+    btn.textContent = `${opt}: ${counts[opt]}`;
+  });
+}
+</script>
+
+</body>
+</html>
