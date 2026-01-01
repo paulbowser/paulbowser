@@ -1,0 +1,466 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <title>Counter</title>
+
+  <link rel="apple-touch-icon" href="icon.png">
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Counter">
+<meta name="theme-color" content="#111111">
+
+  <style>
+    :root { 
+      --pad: 14px; 
+      --radius: 14px; 
+      --chip: #efeff4; 
+      --border: #d1d1d6;
+      --bg: #fff;
+      --card-bg: #fff;
+      --text: #111;
+      --text-muted: #666;
+      --text-light: #333;
+      --btn-bg: #f7f7f7;
+      --btn-primary-bg: #111;
+      --btn-primary-text: #fff;
+      --chip-x-bg: #e5e5ea;
+      --chip-border: #e1e1e6;
+      --shadow: rgba(0,0,0,.03);
+    }
+    
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --chip: #2c2c2e;
+        --border: #38383a;
+        --bg: #000;
+        --card-bg: #1c1c1e;
+        --text: #fff;
+        --text-muted: #98989d;
+        --text-light: #ebebf5;
+        --btn-bg: #2c2c2e;
+        --btn-primary-bg: #fff;
+        --btn-primary-text: #000;
+        --chip-x-bg: #48484a;
+        --chip-border: #38383a;
+        --shadow: rgba(255,255,255,.03);
+      }
+    }
+    
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, system-ui, Segoe UI, Roboto, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .wrap {
+      padding: calc(env(safe-area-inset-top) + var(--pad)) var(--pad)
+               calc(env(safe-area-inset-bottom) + var(--pad)) var(--pad);
+      max-width: 920px;
+      margin: 0 auto;
+    }
+    h1 { font-size: 18px; margin: 0 0 10px; }
+    .card {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px;
+      background: var(--card-bg);
+      box-shadow: 0 1px 0 var(--shadow);
+      margin-bottom: 12px;
+    }
+
+    .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+    .row > * { flex: 1; min-width: 120px; }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      font-size: 16px;
+      outline: none;
+      background: var(--card-bg);
+      color: var(--text);
+    }
+    button {
+      -webkit-tap-highlight-color: transparent;
+      border: 1px solid var(--border);
+      background: var(--btn-bg);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    button:active { transform: scale(0.99); }
+
+    .toolbar {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .toolbar button { flex: 1; min-width: 110px; }
+
+    .toggle {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 8px;
+      font-size: 14px;
+      color: var(--text-light);
+    }
+    .toggle input { transform: scale(1.2); }
+
+    /* Sequence chips */
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      min-height: 36px;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: var(--chip);
+      border: 1px solid var(--chip-border);
+      font-size: 14px;
+      line-height: 1;
+    }
+    .chip .x {
+      border: none;
+      background: var(--chip-x-bg);
+      color: var(--text);
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      font-weight: 800;
+      padding: 0;
+    }
+
+    /* Option buttons grid */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (min-width: 520px) {
+      .grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    .optBtn {
+      padding: 16px 14px;
+      border-radius: 18px;
+      font-size: 18px;
+      text-align: left;
+      background: var(--btn-primary-bg);
+      color: var(--btn-primary-text);
+      border: 1px solid var(--btn-primary-bg);
+    }
+    .optBtn small {
+      display: block;
+      opacity: 0.8;
+      font-size: 13px;
+      margin-top: 6px;
+      font-weight: 600;
+    }
+
+    .muted { color: var(--text-muted); font-size: 13px; margin-top: 6px; }
+    .footerNote { font-size: 12px; color: var(--text-muted); margin-top: 8px; }
+    
+    /* Disable double-tap zoom and text selection on iOS */
+html, body {
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+}
+button, input {
+  touch-action: manipulation;
+}
+
+details {
+  overflow: visible;
+}
+
+details[open] {
+  overflow: visible;
+}
+
+details > summary {
+  cursor: pointer;
+  padding: 6px 0;
+  font-weight: 600;
+}
+/* Collapsible sections */
+details > summary.sectionTitle {
+  list-style: none;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-light);
+  padding: 6px 0;
+  user-select: none;
+}
+
+details > summary.sectionTitle::-webkit-details-marker {
+  display: none;
+}
+
+details > summary.sectionTitle::before {
+  content: "▸";
+  display: inline-block;
+  margin-right: 8px;
+  transform: translateY(-1px);
+  transition: transform 0.12s ease;
+}
+
+details[open] > summary.sectionTitle::before {
+  content: "▾";
+}
+
+/* Keep Sequence from pushing layout around too much */
+details .chips {
+  margin-top: 8px;
+}
+
+
+/* Optional: limit expanded Sequence height so buttons don't get pushed offscreen */
+#chips {
+  max-height: 35vh;
+  overflow-y: auto;
+}
+
+  </style>
+
+</head>
+<body>
+  <div class="wrap">
+    <h1>Tap Tracker</h1>
+
+<div class="card">
+  <details open>
+    <summary class="sectionTitle">Counter Settings</summary>
+
+```
+<div class="row">
+  <div style="flex:2; min-width: 220px;">
+    <input id="optionInput" type="text" inputmode="text"
+           placeholder="Options (comma separated) e.g. Yes, No"
+           value="Yes, No" />
+  </div>
+  <div style="flex:1; min-width: 140px;">
+    <button id="genBtn">Generate</button>
+  </div>
+</div>
+
+<div class="toolbar" style="margin-top:10px;">
+  <button id="undoBtn">Undo</button>
+  <button id="clearBtn">Clear</button>
+  <button id="exportBtn">Export CSV</button>
+</div>
+
+<label class="toggle">
+  <input id="timeToggle" type="checkbox" />
+  Record timestamps (for CSV)
+</label>
+
+<div class="footerNote">
+  Tip: add to Home Screen for a full-screen app feel.
+</div>
+```
+
+  </details>
+</div>
+
+<div class="card">
+  <div class="muted">Options</div>
+  <div id="grid" class="grid"></div>
+</div>
+
+<div class="card">
+  <details>
+    <summary class="sectionTitle">Sequence</summary>
+    <div id="chips" class="chips"></div>
+  </details>
+</div>
+
+<script>
+  // State
+  let options = [];
+  let counts = Object.create(null);
+  let events = []; // { option, ts? }
+  // If timestamps are disabled, we still store a ts at time of event if enabled.
+
+  const el = (id) => document.getElementById(id);
+  const optionInput = el("optionInput");
+  const genBtn = el("genBtn");
+  const grid = el("grid");
+  const chips = el("chips");
+  const undoBtn = el("undoBtn");
+  const clearBtn = el("clearBtn");
+  const exportBtn = el("exportBtn");
+  const timeToggle = el("timeToggle");
+
+  function parseOptions(str) {
+    const raw = str.split(",").map(s => s.trim()).filter(Boolean);
+    // de-dupe while preserving order
+    const seen = new Set();
+    return raw.filter(o => (seen.has(o) ? false : (seen.add(o), true)));
+  }
+
+  function generate() {
+    options = parseOptions(optionInput.value);
+    counts = Object.create(null);
+    events = [];
+
+    grid.innerHTML = "";
+    chips.innerHTML = "";
+
+    options.forEach(opt => {
+      counts[opt] = 0;
+
+      const btn = document.createElement("button");
+      btn.className = "optBtn";
+      btn.dataset.option = opt;
+      btn.addEventListener("click", () => add(opt));
+      grid.appendChild(btn);
+    });
+
+    renderButtons();
+    renderChips();
+  }
+
+  function add(opt) {
+    const useTime = timeToggle.checked;
+    const ts = useTime ? new Date() : null;
+
+    events.push({ option: opt, ts });
+    counts[opt] = (counts[opt] || 0) + 1;
+
+    renderButtons();
+    renderChips();
+  }
+
+  function removeAt(index) {
+    const ev = events[index];
+    if (!ev) return;
+    events.splice(index, 1);
+
+    // recompute counts (safe + simple)
+    counts = Object.create(null);
+    options.forEach(o => counts[o] = 0);
+    for (const e of events) counts[e.option] = (counts[e.option] || 0) + 1;
+
+    renderButtons();
+    renderChips();
+  }
+
+  function undo() {
+    if (!events.length) return;
+    removeAt(events.length - 1);
+  }
+
+  function clearAll() {
+    events = [];
+    options.forEach(o => counts[o] = 0);
+    renderButtons();
+    renderChips();
+  }
+
+  function renderButtons() {
+    const btns = grid.querySelectorAll(".optBtn");
+    btns.forEach(btn => {
+      const opt = btn.dataset.option;
+      const c = counts[opt] || 0;
+      btn.innerHTML = `${escapeHtml(opt)}<small>${c}</small>`;
+      btn.setAttribute("aria-label", `${opt} count ${c}`);
+    });
+  }
+
+  function renderChips() {
+    chips.innerHTML = "";
+    if (!events.length) {
+      const empty = document.createElement("div");
+      empty.className = "muted";
+      empty.textContent = "No selections yet.";
+      chips.appendChild(empty);
+      return;
+    }
+
+    events.forEach((ev, i) => {
+      const chip = document.createElement("span");
+      chip.className = "chip";
+
+      const label = document.createElement("span");
+      label.textContent = ev.option;
+
+      const x = document.createElement("button");
+      x.className = "x";
+      x.type = "button";
+      x.textContent = "×";
+      x.addEventListener("click", () => removeAt(i));
+
+      chip.appendChild(label);
+      chip.appendChild(x);
+      chips.appendChild(chip);
+    });
+  }
+
+  function exportCSV() {
+    // CSV: index, option, timestamp_iso8601 (blank if not recorded)
+    const rows = [
+      ["index", "option", "timestamp_iso8601"]
+    ];
+
+    events.forEach((ev, idx) => {
+      rows.push([
+        String(idx + 1),
+        ev.option,
+        ev.ts ? ev.ts.toISOString() : ""
+      ]);
+    });
+
+    const csv = rows.map(r => r.map(csvEscape).join(",")).join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `tap-tracker-${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  function csvEscape(v) {
+    const s = String(v ?? "");
+    if (/[,"\n]/.test(s)) return `"${s.replace(/"/g, '""')}"`;
+    return s;
+  }
+
+  function escapeHtml(s) {
+    return String(s).replace(/[&<>"']/g, (c) => ({
+      "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+    }[c]));
+  }
+
+  // Wire up
+  genBtn.addEventListener("click", generate);
+  undoBtn.addEventListener("click", undo);
+  clearBtn.addEventListener("click", clearAll);
+  exportBtn.addEventListener("click", exportCSV);
+
+  // Generate on load
+  generate();
+</script>
+
+</body>
+</html>
