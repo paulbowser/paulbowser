@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Calc Hub</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="manifest" href="manifest.json">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <select id="appSelect" aria-label="Choose calculator">
+    <option value="curbcalc.html">Curb Calculator</option>
+    <option value="sidewalkcalc.html">Sidewalk Calculator</option>
+    <option value="adacalc.html">ADA Calculator</option>
+    <option value="asphconc.html">Asphalt/Concrete</option>
+    <option value="calctest.html">Calc Test</option>
+    <option value="tabtest.html">Tab Test</option>
+  </select>
+  <button id="themeToggle" aria-label="Toggle dark mode">🌙</button>
+</header>
+
+<iframe id="appFrame" title="Calculator"></iframe>
+
+<script src="app.js"></script>
+</body>
+</html>
