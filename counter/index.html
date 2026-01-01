@@ -2,259 +2,307 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
   <title>Counter</title>
-  
+
+  <!-- PWA-ish bits -->
   <link rel="apple-touch-icon" href="icon.png">
-<link rel="manifest" href="manifest.json">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
-<meta name="apple-mobile-web-app-title" content="Counter">
-<meta name="theme-color" content="#111111">
-  
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Counter">
+  <meta name="theme-color" content="#111111">
+
   <style>
-    :root { --pad: 14px; --radius: 14px; --chip: #efeff4; --border: #d1d1d6; }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: -apple-system, system-ui, Segoe UI, Roboto, Arial, sans-serif;
-      background: #fff;
-      color: #111;
+    /* ===== Theme vars (light) ===== */
+    :root{
+      --pad: 14px;
+      --radius: 16px;
+
+      --bg: #ffffff;
+      --card: #ffffff;
+      --text: #111111;
+      --muted: #555555;
+
+      --border: #d1d1d6;
+      --shadow: 0 1px 0 rgba(0,0,0,.03);
+
+      --btnBg: #f7f7f7;
+      --btnText: #111111;
+
+      --optBg: #111111;
+      --optText: #ffffff;
+      --optBorder: #111111;
+
+      --chipBg: #efeff4;
+      --chipBorder: #e1e1e6;
+      --chipXBg: #e5e5ea;
     }
-    .wrap {
+
+    /* ===== Native dark mode ===== */
+    @media (prefers-color-scheme: dark){
+      :root{
+        --bg: #0b0b0c;
+        --card: #121214;
+        --text: #f4f4f5;
+        --muted: rgba(244,244,245,.72);
+
+        --border: rgba(255,255,255,.14);
+        --shadow: 0 1px 0 rgba(255,255,255,.03);
+
+        --btnBg: rgba(255,255,255,.10);
+        --btnText: #f4f4f5;
+
+        --optBg: #0f0f11;
+        --optText: #f4f4f5;
+        --optBorder: rgba(255,255,255,.16);
+
+        --chipBg: rgba(255,255,255,.08);
+        --chipBorder: rgba(255,255,255,.12);
+        --chipXBg: rgba(255,255,255,.14);
+      }
+    }
+
+    *{ box-sizing: border-box; }
+
+    /* Disable double-tap zoom + selection while tapping */
+    html, body{
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, system-ui, Segoe UI, Roboto, Arial, sans-serif;
+      touch-action: manipulation;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+    button, input{ touch-action: manipulation; }
+
+    .wrap{
       padding: calc(env(safe-area-inset-top) + var(--pad)) var(--pad)
                calc(env(safe-area-inset-bottom) + var(--pad)) var(--pad);
       max-width: 920px;
       margin: 0 auto;
     }
-    h1 { font-size: 18px; margin: 0 0 10px; }
-    .card {
+
+    h1{ font-size: 18px; margin: 0 0 10px; }
+
+    .card{
       border: 1px solid var(--border);
       border-radius: var(--radius);
       padding: 12px;
-      background: #fff;
-      box-shadow: 0 1px 0 rgba(0,0,0,.03);
+      background: var(--card);
+      box-shadow: var(--shadow);
       margin-bottom: 12px;
     }
 
-    .row { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
-    .row > * { flex: 1; min-width: 120px; }
+    .row{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .row > *{ flex: 1; min-width: 120px; }
 
-    input[type="text"] {
-      width: 100%;
-      padding: 12px 12px;
+    input[type="text"]{
+      width:100%;
+      padding:12px 12px;
       border-radius: 12px;
       border: 1px solid var(--border);
       font-size: 16px;
       outline: none;
+      background: transparent;
+      color: var(--text);
+      -webkit-user-select: text;
+      user-select: text;
     }
-    button {
+
+    button{
       -webkit-tap-highlight-color: transparent;
       border: 1px solid var(--border);
-      background: #f7f7f7;
-      color: #111;
+      background: var(--btnBg);
+      color: var(--btnText);
       border-radius: 14px;
       padding: 12px 14px;
       font-size: 16px;
       font-weight: 600;
       cursor: pointer;
     }
-    button:active { transform: scale(0.99); }
+    button:active{ transform: scale(0.99); }
 
-    .toolbar {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
+    .toolbar{
+      display:flex;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top: 10px;
     }
-    .toolbar button { flex: 1; min-width: 110px; }
+    .toolbar button{ flex: 1; min-width: 110px; }
 
-    .toggle {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 8px;
+    .toggle{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      margin-top: 10px;
       font-size: 14px;
-      color: #333;
+      color: var(--muted);
     }
-    .toggle input { transform: scale(1.2); }
+    .toggle input{ transform: scale(1.2); }
 
-    /* Sequence chips */
-    .chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      align-items: center;
-      min-height: 36px;
-    }
-    .chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 10px;
-      border-radius: 999px;
-      background: var(--chip);
-      border: 1px solid #e1e1e6;
-      font-size: 14px;
-      line-height: 1;
-    }
-    .chip .x {
-      border: none;
-      background: #e5e5ea;
-      width: 26px;
-      height: 26px;
-      border-radius: 999px;
-      font-weight: 800;
-      padding: 0;
-    }
+    .muted{ color: var(--muted); font-size: 13px; margin-top: 6px; }
+    .footerNote{ font-size: 12px; color: var(--muted); margin-top: 8px; }
 
-    /* Option buttons grid */
-    .grid {
-      display: grid;
+    /* ===== Options grid ===== */
+    .grid{
+      display:grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
+      margin-top: 10px;
     }
-    @media (min-width: 520px) {
-      .grid { grid-template-columns: repeat(3, 1fr); }
+    @media (min-width: 520px){
+      .grid{ grid-template-columns: repeat(3, 1fr); }
     }
-    .optBtn {
+
+    .optBtn{
       padding: 16px 14px;
       border-radius: 18px;
       font-size: 18px;
       text-align: left;
-      background: #111;
-      color: #fff;
-      border: 1px solid #111;
+      background: var(--optBg);
+      color: var(--optText);
+      border: 1px solid var(--optBorder);
     }
-    .optBtn small {
-      display: block;
-      opacity: 0.8;
+    .optBtn small{
+      display:block;
+      opacity:.8;
       font-size: 13px;
       margin-top: 6px;
       font-weight: 600;
     }
 
-    .muted { color: #555; font-size: 13px; margin-top: 6px; }
-    .footerNote { font-size: 12px; color: #666; margin-top: 8px; }
-    
-    /* Disable double-tap zoom and text selection on iOS */
-html, body {
-  touch-action: manipulation;
-  -webkit-user-select: none;
-  user-select: none;
-}
-button, input {
-  touch-action: manipulation;
-}
+    /* ===== Collapsible details (NO global max-height/overflow!) ===== */
+    summary.sectionTitle{
+      list-style: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--muted);
+      padding: 6px 0 10px 0;
+      user-select: none;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    summary.sectionTitle::-webkit-details-marker{ display:none; }
 
-details {
-  max-height: 35vh;
-  overflow: hidden;
-}
+    summary.sectionTitle::before{
+      content:"▸";
+      width: 14px;
+      display:inline-block;
+      transform: translateY(-1px);
+    }
+    details[open] > summary.sectionTitle::before{
+      content:"▾";
+    }
 
-details[open] {
-  overflow: auto;
-}
+    /* ===== Sequence chips ===== */
+    #chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap: 8px;
+      align-items:center;
+      min-height: 36px;
+      margin-top: 6px;
 
-details > summary {
-  cursor: pointer;
-  padding: 6px 0;
-  font-weight: 600;
-}
-/* Collapsible sections */
-details > summary.sectionTitle {
-  list-style: none;
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 700;
-  color: #333;
-  padding: 6px 0;
-  user-select: none;
-}
+      /* key: only chips scroll; prevents pushing buttons */
+      max-height: 35vh;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding-bottom: 2px;
+    }
 
-details > summary.sectionTitle::-webkit-details-marker {
-  display: none;
-}
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: var(--chipBg);
+      border: 1px solid var(--chipBorder);
+      font-size: 14px;
+      line-height: 1;
+      color: var(--text);
+    }
 
-details > summary.sectionTitle::before {
-  content: "▸";
-  display: inline-block;
-  margin-right: 8px;
-  transform: translateY(-1px);
-  transition: transform 0.12s ease;
-}
-
-details[open] > summary.sectionTitle::before {
-  content: "▾";
-}
-
-/* Keep Sequence from pushing layout around too much */
-details .chips {
-  margin-top: 8px;
-}
-
-
-/* Optional: limit expanded Sequence height so buttons don’t get pushed offscreen */
-#chips {
-  max-height: 35vh;
-  overflow-y: auto;
-}
-
+    .chip .x{
+      border: none;
+      background: var(--chipXBg);
+      width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      font-weight: 800;
+      padding: 0;
+      color: var(--text);
+    }
   </style>
 </head>
+
 <body>
   <div class="wrap">
-    <h1>Tap Tracker</h1>
+    <h1>Counter</h1>
 
-<div class="card">
-  <details open>
-    <summary class="sectionTitle">Counter Settings</summary>
+    <!-- SETTINGS (collapsible, not clipped) -->
+    <div class="card">
+      <details id="settingsDetails" open>
+        <summary class="sectionTitle">Counter Settings</summary>
 
-    <div class="row">
-      <div style="flex:2; min-width: 220px;">
-        <input id="optionInput" type="text" inputmode="text"
-               placeholder="Options (comma separated) e.g. Yes, No"
-               value="Yes, No" />
-      </div>
-      <div style="flex:1; min-width: 140px;">
-        <button id="genBtn">Generate</button>
-      </div>
+        <div class="row">
+          <div style="flex:2; min-width: 220px;">
+            <input id="optionInput" type="text" inputmode="text"
+                   placeholder="Options (comma separated) e.g. Yes, No"
+                   value="Yes, No" />
+          </div>
+          <div style="flex:1; min-width: 140px;">
+            <button id="genBtn" type="button">Generate</button>
+          </div>
+        </div>
+
+        <div class="toolbar">
+          <button id="undoBtn" type="button">Undo</button>
+          <button id="clearBtn" type="button">Clear</button>
+          <button id="exportBtn" type="button">Export CSV</button>
+        </div>
+
+        <label class="toggle">
+          <input id="timeToggle" type="checkbox" />
+          Record timestamps (for CSV)
+        </label>
+
+        <div class="footerNote">
+          Tip: Share → Add to Home Screen for a fullscreen app feel.
+        </div>
+      </details>
     </div>
 
-    <div class="toolbar" style="margin-top:10px;">
-      <button id="undoBtn">Undo</button>
-      <button id="clearBtn">Clear</button>
-      <button id="exportBtn">Export CSV</button>
+    <!-- OPTIONS -->
+    <div class="card">
+      <div class="muted">Options</div>
+      <div id="grid" class="grid"></div>
     </div>
 
-    <label class="toggle">
-      <input id="timeToggle" type="checkbox" />
-      Record timestamps (for CSV)
-    </label>
-
-    <div class="footerNote">
-      Tip: add to Home Screen for a full-screen app feel.
+    <!-- SEQUENCE (collapsible, chips scroll internally) -->
+    <div class="card">
+      <details id="sequenceDetails">
+        <summary class="sectionTitle">Sequence</summary>
+        <div id="chips"></div>
+      </details>
     </div>
-  </details>
-</div>
-
-<div class="card">
-  <div class="muted">Options</div>
-  <div id="grid" class="grid"></div>
-</div>
-
-<div class="card">
-  <details>
-    <summary class="sectionTitle">Sequence</summary>
-    <div id="chips" class="chips"></div>
-  </details>
-</div>
+  </div>
 
 <script>
   // State
   let options = [];
   let counts = Object.create(null);
   let events = []; // { option, ts? }
-  // If timestamps are disabled, we still store a ts at time of event if enabled.
 
   const el = (id) => document.getElementById(id);
   const optionInput = el("optionInput");
@@ -268,7 +316,6 @@ details .chips {
 
   function parseOptions(str) {
     const raw = str.split(",").map(s => s.trim()).filter(Boolean);
-    // de-dupe while preserving order
     const seen = new Set();
     return raw.filter(o => (seen.has(o) ? false : (seen.add(o), true)));
   }
@@ -283,9 +330,9 @@ details .chips {
 
     options.forEach(opt => {
       counts[opt] = 0;
-
       const btn = document.createElement("button");
       btn.className = "optBtn";
+      btn.type = "button";
       btn.dataset.option = opt;
       btn.addEventListener("click", () => add(opt));
       grid.appendChild(btn);
@@ -296,12 +343,9 @@ details .chips {
   }
 
   function add(opt) {
-    const useTime = timeToggle.checked;
-    const ts = useTime ? new Date() : null;
-
+    const ts = timeToggle.checked ? new Date() : null;
     events.push({ option: opt, ts });
     counts[opt] = (counts[opt] || 0) + 1;
-
     renderButtons();
     renderChips();
   }
@@ -311,7 +355,7 @@ details .chips {
     if (!ev) return;
     events.splice(index, 1);
 
-    // recompute counts (safe + simple)
+    // recompute counts (simple + safe)
     counts = Object.create(null);
     options.forEach(o => counts[o] = 0);
     for (const e of events) counts[e.option] = (counts[e.option] || 0) + 1;
@@ -372,17 +416,9 @@ details .chips {
   }
 
   function exportCSV() {
-    // CSV: index, option, timestamp_iso8601 (blank if not recorded)
-    const rows = [
-      ["index", "option", "timestamp_iso8601"]
-    ];
-
+    const rows = [["index", "option", "timestamp_iso8601"]];
     events.forEach((ev, idx) => {
-      rows.push([
-        String(idx + 1),
-        ev.option,
-        ev.ts ? ev.ts.toISOString() : ""
-      ]);
+      rows.push([String(idx + 1), ev.option, ev.ts ? ev.ts.toISOString() : ""]);
     });
 
     const csv = rows.map(r => r.map(csvEscape).join(",")).join("\n");
@@ -391,7 +427,7 @@ details .chips {
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = `tap-tracker-${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.csv`;
+    a.download = `counter-${new Date().toISOString().slice(0,19).replace(/[:T]/g,'-')}.csv`;
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -410,13 +446,11 @@ details .chips {
     }[c]));
   }
 
-  // Wire up
   genBtn.addEventListener("click", generate);
   undoBtn.addEventListener("click", undo);
   clearBtn.addEventListener("click", clearAll);
   exportBtn.addEventListener("click", exportCSV);
 
-  // Generate on load
   generate();
 </script>
 </body>
