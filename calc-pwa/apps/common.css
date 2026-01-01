@@ -115,4 +115,8 @@ small,.muted{
 
 hr{ border:0; border-top:1px solid var(--border); margin: 14px 0; }
 
-br{ display:none; } /* remove old spacer br-br layouts */
+/* Only hide legacy spacer <br> in forms */
+form br { display: none; }
+
+/* But keep <br> working in results */
+#results br, .results br { display: block; }
