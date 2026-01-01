@@ -1,37 +1,55 @@
-const frame=document.getElementById("appFrame");
-const select=document.getElementById("appSelect");
-const toggle=document.getElementById("themeToggle");
+const frame = document.getElementById("appFrame");
+const select = document.getElementById("appSelect");
+const toggle = document.getElementById("themeToggle");
 
-const defaultApp="curbcalc.html";
-const savedApp=localStorage.getItem("app")||defaultApp;
+const defaultApp = select?.options?.[0]?.value || "curbcalc.html";
 
-function loadApp(name){
-  frame.src="apps/"+name;
-  select.value=name;
-  // Apply current theme inside iframe after navigation
-  try { frame.contentWindow && frame.contentWindow.postMessage({type:"theme", value: (localStorage.getItem("theme")||"light")}, "*"); } catch(e) {}
+function currentTheme() {
+  return localStorage.getItem("theme") || "light";
 }
 
-loadApp(savedApp);
+function postTheme() {
+  // Post after the iframe has loaded (best-effort)
+  try {
+    frame.contentWindow && frame.contentWindow.postMessage(
+      { type: "theme", value: currentTheme() },
+      window.location.origin
+    );
+  } catch (e) {}
+}
 
-select.addEventListener("change",()=>{
-  localStorage.setItem("app",select.value);
-  loadApp(select.value);
-});
+function loadApp(name) {
+  frame.src = "apps/" + name;
+  select.value = name;
+  localStorage.setItem("app", name);
+}
 
 function setTheme(theme) {
   document.body.classList.toggle("dark", theme === "dark");
   localStorage.setItem("theme", theme);
   toggle.textContent = theme === "dark" ? "☀️" : "🌙";
-  // Tell the embedded calculator too (best-effort)
-  try { frame.contentWindow && frame.contentWindow.postMessage({type:"theme", value: theme}, "*"); } catch(e) {}
+
+  // Try now, and again shortly in case the iframe is mid-navigation.
+  postTheme();
+  setTimeout(postTheme, 50);
+  setTimeout(postTheme, 250);
 }
 
-setTheme(localStorage.getItem("theme")||"light");
+loadApp(localStorage.getItem("app") || defaultApp);
+setTheme(currentTheme());
 
-toggle.addEventListener("click",()=>{
-  const isDark=document.body.classList.contains("dark");
-  setTheme(isDark?"light":"dark");
+// When the iframe finishes loading, re-apply theme inside it.
+frame.addEventListener("load", () => {
+  postTheme();
+  setTimeout(postTheme, 50);
 });
 
-if("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js");
+select.addEventListener("change", () => loadApp(select.value));
+
+toggle.addEventListener("click", () => {
+  setTheme(document.body.classList.contains("dark") ? "light" : "dark");
+});
+
+if ("serviceWorker" in navigator) {
+  navigator.serviceWorker.register("sw.js");
+}
