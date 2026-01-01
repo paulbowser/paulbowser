@@ -32,22 +32,20 @@
       --shadow: rgba(0,0,0,.03);
     }
     
-    @media (prefers-color-scheme: dark) {
-      :root {
-        --chip: #2c2c2e;
-        --border: #38383a;
-        --bg: #000;
-        --card-bg: #1c1c1e;
-        --text: #fff;
-        --text-muted: #98989d;
-        --text-light: #ebebf5;
-        --btn-bg: #2c2c2e;
-        --btn-primary-bg: #fff;
-        --btn-primary-text: #000;
-        --chip-x-bg: #48484a;
-        --chip-border: #38383a;
-        --shadow: rgba(255,255,255,.03);
-      }
+    body.dark-mode {
+      --chip: #2c2c2e;
+      --border: #38383a;
+      --bg: #000;
+      --card-bg: #1c1c1e;
+      --text: #fff;
+      --text-muted: #98989d;
+      --text-light: #ebebf5;
+      --btn-bg: #2c2c2e;
+      --btn-primary-bg: #fff;
+      --btn-primary-text: #000;
+      --chip-x-bg: #48484a;
+      --chip-border: #38383a;
+      --shadow: rgba(255,255,255,.03);
     }
     
     * { box-sizing: border-box; }
@@ -56,6 +54,7 @@
       font-family: -apple-system, system-ui, Segoe UI, Roboto, Arial, sans-serif;
       background: var(--bg);
       color: var(--text);
+      transition: background 0.2s, color 0.2s;
     }
     .wrap {
       padding: calc(env(safe-area-inset-top) + var(--pad)) var(--pad)
@@ -271,6 +270,11 @@ details .chips {
   Record timestamps (for CSV)
 </label>
 
+<label class="toggle">
+  <input id="darkToggle" type="checkbox" />
+  Dark mode
+</label>
+
 <div class="footerNote">
   Tip: add to Home Screen for a full-screen app feel.
 </div>
@@ -295,8 +299,7 @@ details .chips {
   // State
   let options = [];
   let counts = Object.create(null);
-  let events = []; // { option, ts? }
-  // If timestamps are disabled, we still store a ts at time of event if enabled.
+  let events = []; // { option, ts }
 
   const el = (id) => document.getElementById(id);
   const optionInput = el("optionInput");
@@ -307,6 +310,19 @@ details .chips {
   const clearBtn = el("clearBtn");
   const exportBtn = el("exportBtn");
   const timeToggle = el("timeToggle");
+  const darkToggle = el("darkToggle");
+
+  // Dark mode toggle
+  darkToggle.addEventListener("change", () => {
+    document.body.classList.toggle("dark-mode", darkToggle.checked);
+    localStorage.setItem("darkMode", darkToggle.checked);
+  });
+
+  // Load dark mode preference
+  if (localStorage.getItem("darkMode") === "true") {
+    darkToggle.checked = true;
+    document.body.classList.add("dark-mode");
+  }
 
   function parseOptions(str) {
     const raw = str.split(",").map(s => s.trim()).filter(Boolean);
@@ -338,9 +354,7 @@ details .chips {
   }
 
   function add(opt) {
-    const useTime = timeToggle.checked;
-    const ts = useTime ? new Date() : null;
-
+    const ts = new Date();
     events.push({ option: opt, ts });
     counts[opt] = (counts[opt] || 0) + 1;
 
@@ -414,7 +428,9 @@ details .chips {
   }
 
   function exportCSV() {
-    // CSV: index, option, timestamp_iso8601 (blank if not recorded)
+    const useTime = timeToggle.checked;
+    
+    // CSV: index, option, timestamp_iso8601
     const rows = [
       ["index", "option", "timestamp_iso8601"]
     ];
@@ -423,7 +439,7 @@ details .chips {
       rows.push([
         String(idx + 1),
         ev.option,
-        ev.ts ? ev.ts.toISOString() : ""
+        useTime ? ev.ts.toISOString() : ""
       ]);
     });
 
