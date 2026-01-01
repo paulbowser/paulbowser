@@ -145,6 +145,21 @@ html, body {
 button, input {
   touch-action: manipulation;
 }
+
+details {
+  max-height: 35vh;
+  overflow: hidden;
+}
+
+details[open] {
+  overflow: auto;
+}
+
+details > summary {
+  cursor: pointer;
+  padding: 6px 0;
+  font-weight: 600;
+}
   </style>
 </head>
 <body>
@@ -179,16 +194,17 @@ button, input {
       </div>
     </div>
 
-    <div class="card">
-      <div class="muted">Sequence (tap × to remove any entry)</div>
-      <div id="chips" class="chips"></div>
-    </div>
+<div class="card">
+  <div class="muted">Options</div>
+  <div id="grid" class="grid"></div>
+</div>
 
-    <div class="card">
-      <div class="muted">Options</div>
-      <div id="grid" class="grid"></div>
-    </div>
-  </div>
+<div class="card">
+  <details>
+    <summary class="muted">Sequence (tap × to remove)</summary>
+    <div id="chips" class="chips"></div>
+  </details>
+</div>
 
 <script>
   // State
