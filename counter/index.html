@@ -343,12 +343,12 @@
   }
 
   function add(opt) {
-    const ts = timeToggle.checked ? new Date() : null;
-    events.push({ option: opt, ts });
-    counts[opt] = (counts[opt] || 0) + 1;
-    renderButtons();
-    renderChips();
-  }
+  const ts = new Date();  // ALWAYS record timestamp
+  events.push({ option: opt, ts });
+  counts[opt] = (counts[opt] || 0) + 1;
+  renderButtons();
+  renderChips();
+}
 
   function removeAt(index) {
     const ev = events[index];
@@ -418,7 +418,11 @@
   function exportCSV() {
     const rows = [["index", "option", "timestamp_iso8601"]];
     events.forEach((ev, idx) => {
-      rows.push([String(idx + 1), ev.option, ev.ts ? ev.ts.toISOString() : ""]);
+      rows.push([
+        String(idx + 1),
+        ev.option,
+        timeToggle.checked ? ev.ts.toISOString() : ""
+      ]);
     });
 
     const csv = rows.map(r => r.map(csvEscape).join(",")).join("\n");
