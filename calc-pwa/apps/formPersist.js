@@ -54,6 +54,12 @@
     if (!form) return;
     var fields = Array.from(form.querySelectorAll("input, select, textarea")).filter(shouldPersist);
 
+    function saveAll(){
+      fields.forEach(function(field){
+        storeValue(prefix, field);
+      });
+    }
+
     fields.forEach(function(field){
       var key = fieldKey(prefix, field);
       if (!key) return;
@@ -76,8 +82,16 @@
       }
     }
 
+    fields.forEach(function(field){
+      field.addEventListener("input", handleChange);
+      field.addEventListener("change", handleChange);
+      field.addEventListener("blur", handleChange);
+    });
     form.addEventListener("input", handleChange);
     form.addEventListener("change", handleChange);
+    window.addEventListener("pagehide", saveAll);
+    window.addEventListener("beforeunload", saveAll);
+    setTimeout(saveAll, 0);
 
     var resetButtonId = options && options.resetButtonId;
     if (resetButtonId) {
