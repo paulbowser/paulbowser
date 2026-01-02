@@ -90,7 +90,6 @@
     form.addEventListener("input", handleChange);
     form.addEventListener("change", handleChange);
     window.addEventListener("pagehide", saveAll);
-    window.addEventListener("beforeunload", saveAll);
     setTimeout(saveAll, 0);
 
     var resetButtonId = options && options.resetButtonId;
