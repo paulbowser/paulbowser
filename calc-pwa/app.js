@@ -45,9 +45,18 @@ function applyTheme() {
 
 function postTheme(resolved) {
   try {
+    if (frame.contentDocument && frame.contentDocument.documentElement) {
+      if (themeMode === "system") {
+        frame.contentDocument.documentElement.removeAttribute("data-theme");
+      } else {
+        frame.contentDocument.documentElement.setAttribute("data-theme", resolved);
+      }
+    }
+  } catch (e) {}
+  try {
     frame.contentWindow && frame.contentWindow.postMessage(
       { type: "theme", mode: themeMode, value: resolved },
-      window.location.origin
+      "*"
     );
   } catch (e) {}
 }

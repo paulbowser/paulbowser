@@ -16,7 +16,3 @@ document.getElementById('curbForm').addEventListener('submit', function(event) {
 
   document.getElementById('results').innerHTML = results;
 });
-
-if (window.FormPersist) {
-  FormPersist.init("curbForm", "curbcalc", { resetButtonId: "curbReset", resultsId: "results" });
-}
