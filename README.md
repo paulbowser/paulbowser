@@ -1,6 +1,6 @@
 - 👋 Hi, I’m @paulbowser
 - 👀 I’m interested in video production, iOS development, other miscellaneous nerdy stuff
-- 🌱 I’m currently learning SwiftUI
+- 🌱 I’m currently learning SwiftUI and testing concepts with PWA apps for rapid deployment
 <!---
 - 💞️ I’m looking to collaborate on ...
 - 📫 How to reach me ...
