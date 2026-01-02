@@ -20,16 +20,6 @@ function loadApp(name) {
   localStorage.setItem("app", name);
 }
 
-function setTheme(theme) {
-  document.body.classList.toggle("dark", theme === "dark");
-  toggle.textContent = theme === "dark" ? "☀️" : "🌙";
-
-  // Try now, and again shortly in case the iframe is mid-navigation.
-  postTheme();
-  setTimeout(postTheme, 50);
-  setTimeout(postTheme, 250);
-}
-
 loadApp(localStorage.getItem("app") || defaultApp);
 
 select.addEventListener("change", () => loadApp(select.value));

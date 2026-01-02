@@ -30,3 +30,7 @@ document.getElementById('materialForm').addEventListener('submit', function(even
 
   document.getElementById('results').innerHTML = results;
 });
+
+if (window.FormPersist) {
+  FormPersist.init("materialForm", "asphconc", { resetButtonId: "asphconcReset", resultsId: "results" });
+}

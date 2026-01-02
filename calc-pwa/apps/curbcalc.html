@@ -21,43 +21,13 @@
 <!-- Prepopulated value is set to $41.00 -->
 
     <div class="actions">
-
-
       <input type="submit" value="Calculate">
-
-
+      <button type="button" id="curbReset">Reset</button>
     </div>
   </form>
 
   <div id="results" class="results" aria-live="polite"></div>
-<script>
-(function(){
-  function apply(theme){
-    var root = document.documentElement;
-    root.classList.toggle('dark', theme === 'dark');
-  }
-  // Initial theme from shared localStorage (same-origin with parent)
-  apply(localStorage.getItem('theme') || 'light');
-
-  // Listen for parent PWA messages
-  window.addEventListener('message', function(ev){
-    try{
-      var data = ev.data || {};
-      if(data && data.type === 'theme' && (data.value === 'dark' || data.value === 'light')){
-        apply(data.value);
-      }
-    }catch(e){}
-  });
-
-  // Also respond to storage changes (best-effort)
-  window.addEventListener('storage', function(e){
-    if(e.key === 'theme') apply(e.newValue || 'light');
-  });
-})();
-</script>
-
-
-
+  <script src="formPersist.js"></script>
   <script src="curbCalculator.js"></script>
 </body>
 </html>
