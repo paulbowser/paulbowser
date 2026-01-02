@@ -1,4 +1,4 @@
-const cacheName="calc-pwa-v2";
+const cacheName="calc-pwa-v3";
 const files=[
   "./",
   "index.html",
@@ -11,11 +11,14 @@ const files=[
   "apps/asphconc.html",
   "apps/asphconcCalculator.js",
   "apps/calctest.html",
+  "apps/common.css",
   "apps/curbCalculator.js",
   "apps/curbcalc.html",
+  "apps/formPersist.js",
   "apps/sidewalkCalculator.js",
   "apps/sidewalkcalc.html",
-  "apps/tabtest.html"
+  "apps/tabtest.html",
+  "apps/themeBridge.js"
 ];
 
 self.addEventListener("install",(e)=>{
