@@ -1,4 +1,4 @@
-const cacheName="calc-pwa-v3";
+const cacheName="calc-pwa-v4";
 const files=[
   "./",
   "index.html",
