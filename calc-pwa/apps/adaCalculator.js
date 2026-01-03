@@ -23,3 +23,7 @@ document.getElementById('circleForm').addEventListener('submit', function(event)
 
   document.getElementById('results').innerHTML = results;
 });
+
+if (window.FormPersist) {
+  FormPersist.init("circleForm", "adacalc", { resetButtonId: "adaReset", resultsId: "results" });
+}

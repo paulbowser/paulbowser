@@ -16,3 +16,7 @@ document.getElementById('sidewalkForm').addEventListener('submit', function(even
 
   document.getElementById('results').innerHTML = results;
 });
+
+if (window.FormPersist) {
+  FormPersist.init("sidewalkForm", "sidewalkcalc", { resetButtonId: "sidewalkReset", resultsId: "results" });
+}

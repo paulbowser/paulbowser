@@ -7,8 +7,31 @@
   --accent:#2563eb;
   --accent2:#1d4ed8;
   --shadow: 0 6px 22px rgba(0,0,0,.08);
+  color-scheme: light dark;
 }
-:root.dark{
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0f1115;
+    --fg:#f2f2f2;
+    --muted:#b3b3b3;
+    --card:#161a22;
+    --border:#2a3140;
+    --accent:#60a5fa;
+    --accent2:#3b82f6;
+    --shadow: 0 10px 28px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="light"]{
+  --bg:#ffffff;
+  --fg:#0b0b0b;
+  --muted:#5a5a5a;
+  --card:#f6f6f6;
+  --border:#d7d7d7;
+  --accent:#2563eb;
+  --accent2:#1d4ed8;
+  --shadow: 0 6px 22px rgba(0,0,0,.08);
+}
+:root[data-theme="dark"]{
   --bg:#0f1115;
   --fg:#f2f2f2;
   --muted:#b3b3b3;
@@ -80,7 +103,7 @@ input[type="radio"]{
   gap: 10px;
 }
 
-button, input[type="submit"]{
+.actions button, .actions input[type="submit"]{
   appearance: none;
   border: 0;
   background: var(--accent);
@@ -90,10 +113,10 @@ button, input[type="submit"]{
   font-size: 17px;
   font-weight: 700;
   cursor: pointer;
-  width: 100%;
+  flex: 1;
 }
 
-button:hover, input[type="submit"]:hover{
+.actions button:hover, .actions input[type="submit"]:hover{
   background: var(--accent2);
 }
 

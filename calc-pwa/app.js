@@ -2,18 +2,61 @@ const frame = document.getElementById("appFrame");
 const select = document.getElementById("appSelect");
 const toggle = document.getElementById("themeToggle");
 
-const defaultApp = select?.options?.[0]?.value || "curbcalc.html";
-
-function currentTheme() {
-  return localStorage.getItem("theme") || "light";
+// Remove options that have data-include="false" so inactive entries
+// can remain in the HTML without being shown in the select.
+if (select) {
+  const opts = Array.from(select.querySelectorAll('option'));
+  opts.forEach(opt => {
+    const includeAttr = opt.getAttribute('data-include');
+    const include = includeAttr === null ? true : !(includeAttr === 'false' || includeAttr === '0');
+    if (!include) opt.remove();
+  });
 }
 
-function postTheme() {
-  // Post after the iframe has loaded (best-effort)
+const defaultApp = select?.options?.[0]?.value || "curbcalc.html";
+
+// Clear legacy theme persistence so system theme stays in control.
+localStorage.removeItem("theme");
+
+const themeModes = ["system", "light", "dark"];
+let themeMode = "system";
+const media = window.matchMedia("(prefers-color-scheme: dark)");
+
+function resolveTheme() {
+  if (themeMode === "system") {
+    return media.matches ? "dark" : "light";
+  }
+  return themeMode;
+}
+
+function applyTheme() {
+  const resolved = resolveTheme();
+  if (themeMode === "system") {
+    document.documentElement.removeAttribute("data-theme");
+  } else {
+    document.documentElement.setAttribute("data-theme", themeMode);
+  }
+  if (toggle) {
+    const label = themeMode.charAt(0).toUpperCase() + themeMode.slice(1);
+    toggle.textContent = "Theme: " + label;
+  }
+  postTheme(resolved);
+}
+
+function postTheme(resolved) {
+  try {
+    if (frame.contentDocument && frame.contentDocument.documentElement) {
+      if (themeMode === "system") {
+        frame.contentDocument.documentElement.removeAttribute("data-theme");
+      } else {
+        frame.contentDocument.documentElement.setAttribute("data-theme", resolved);
+      }
+    }
+  } catch (e) {}
   try {
     frame.contentWindow && frame.contentWindow.postMessage(
-      { type: "theme", value: currentTheme() },
-      window.location.origin
+      { type: "theme", mode: themeMode, value: resolved },
+      "*"
     );
   } catch (e) {}
 }
@@ -24,30 +67,28 @@ function loadApp(name) {
   localStorage.setItem("app", name);
 }
 
-function setTheme(theme) {
-  document.body.classList.toggle("dark", theme === "dark");
-  localStorage.setItem("theme", theme);
-  toggle.textContent = theme === "dark" ? "☀️" : "🌙";
-
-  // Try now, and again shortly in case the iframe is mid-navigation.
-  postTheme();
-  setTimeout(postTheme, 50);
-  setTimeout(postTheme, 250);
-}
-
 loadApp(localStorage.getItem("app") || defaultApp);
-setTheme(currentTheme());
+applyTheme();
 
-// When the iframe finishes loading, re-apply theme inside it.
 frame.addEventListener("load", () => {
-  postTheme();
-  setTimeout(postTheme, 50);
+  postTheme(resolveTheme());
+  setTimeout(() => postTheme(resolveTheme()), 50);
 });
 
 select.addEventListener("change", () => loadApp(select.value));
 
-toggle.addEventListener("click", () => {
-  setTheme(document.body.classList.contains("dark") ? "light" : "dark");
+if (toggle) {
+  toggle.addEventListener("click", () => {
+    const idx = themeModes.indexOf(themeMode);
+    themeMode = themeModes[(idx + 1) % themeModes.length];
+    applyTheme();
+  });
+}
+
+media.addEventListener("change", () => {
+  if (themeMode === "system") {
+    applyTheme();
+  }
 });
 
 if ("serviceWorker" in navigator) {
