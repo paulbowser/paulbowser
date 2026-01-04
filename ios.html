@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>iOS Version Check</title>
+<style>
+  body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    background: black;
+    color: #ccc;
+    text-align: center;
+    padding-top: 20vh;
+  }
+  .small {
+    font-size: 12px;
+    opacity: 0.6;
+    margin-top: 20px;
+    word-break: break-all;
+  }
+</style>
+</head>
+<body>
+
+<h1 id="result">Checking…</h1>
+<div id="detail"></div>
+<div class="small" id="ua"></div>
+
+<script>
+(function () {
+  const ua = navigator.userAgent || "";
+
+  document.getElementById("ua").textContent = ua;
+
+  // iOS / iPadOS detection
+  const match = ua.match(/(iPhone|iPad|iPod).*OS (\d+)[._](\d+)(?:[._](\d+))?/);
+
+  if (match) {
+    const major = match[2];
+    const minor = match[3];
+    const patch = match[4] || "0";
+    const version = `${major}.${minor}.${patch}`;
+
+    document.getElementById("result").textContent = "iOS detected";
+    document.getElementById("detail").textContent = `Version: ${version}`;
+  } else {
+    document.getElementById("result").textContent = "Not iOS";
+    document.getElementById("detail").textContent = "";
+  }
+})();
+</script>
+
+</body>
+</html>
