@@ -3,22 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>iOS Compatibility Check</title>
+<title>iOS Safari 26 Check</title>
 <style>
-  body {
-    background: black;
-    color: #ccc;
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-    text-align: center;
-    padding-top: 20vh;
+  body{
+    background:#000;
+    color:#ccc;
+    font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+    text-align:center;
+    padding-top:20vh;
   }
-  .ok { color: #6f6; }
-  .bad { color: #f66; }
-  .small {
-    font-size: 12px;
-    opacity: 0.6;
-    margin-top: 20px;
-    word-break: break-all;
+  .ok{color:#6f6;}
+  .bad{color:#f66;}
+  .small{
+    font-size:12px;
+    opacity:.6;
+    margin-top:18px;
+    word-break:break-all;
+    padding:0 12px;
   }
 </style>
 </head>
@@ -29,29 +30,32 @@
 <div class="small" id="ua"></div>
 
 <script>
-(function () {
+(function(){
   const ua = navigator.userAgent || "";
   document.getElementById("ua").textContent = ua;
 
-  // iOS detection
-  const match = ua.match(/(iPhone|iPad|iPod).*OS (\d+)[._](\d+)?/);
+  const isIOS = /iPhone|iPad|iPod/.test(ua);
+  const isSafari = /Safari\//.test(ua) && !/CriOS|FxiOS|EdgiOS/.test(ua);
+  const safariVerMatch = ua.match(/Version\/(\d+(?:\.\d+)?)/);
 
-  if (!match) {
-    document.getElementById("status").textContent = "Not iOS";
+  if (!isIOS || !isSafari || !safariVerMatch) {
+    document.getElementById("status").textContent = "Unsupported browser";
+    document.getElementById("status").className = "bad";
     return;
   }
 
-  const major = parseInt(match[2], 10);
+  const safariVersion = parseFloat(safariVerMatch[1]);
 
-  if (major < 18) {
+  if (safariVersion < 26) {
     document.getElementById("status").textContent = "Out of date";
     document.getElementById("status").className = "bad";
-    document.getElementById("detail").textContent = `Reported iOS version: ${major}`;
   } else {
     document.getElementById("status").textContent = "Up to date";
     document.getElementById("status").className = "ok";
-    document.getElementById("detail").textContent = `Reported iOS version: ${major}`;
   }
+
+  document.getElementById("detail").textContent =
+    `Safari Version: ${safariVerMatch[1]}`;
 })();
 </script>
 
