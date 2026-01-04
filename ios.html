@@ -3,15 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>iOS Version Check</title>
+<title>iOS Compatibility Check</title>
 <style>
   body {
-    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     background: black;
     color: #ccc;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
     text-align: center;
     padding-top: 20vh;
   }
+  .ok { color: #6f6; }
+  .bad { color: #f66; }
   .small {
     font-size: 12px;
     opacity: 0.6;
@@ -22,30 +24,33 @@
 </head>
 <body>
 
-<h1 id="result">Checking…</h1>
+<h1 id="status">Checking…</h1>
 <div id="detail"></div>
 <div class="small" id="ua"></div>
 
 <script>
 (function () {
   const ua = navigator.userAgent || "";
-
   document.getElementById("ua").textContent = ua;
 
-  // iOS / iPadOS detection
-  const match = ua.match(/(iPhone|iPad|iPod).*OS (\d+)[._](\d+)(?:[._](\d+))?/);
+  // iOS detection
+  const match = ua.match(/(iPhone|iPad|iPod).*OS (\d+)[._](\d+)?/);
 
-  if (match) {
-    const major = match[2];
-    const minor = match[3];
-    const patch = match[4] || "0";
-    const version = `${major}.${minor}.${patch}`;
+  if (!match) {
+    document.getElementById("status").textContent = "Not iOS";
+    return;
+  }
 
-    document.getElementById("result").textContent = "iOS detected";
-    document.getElementById("detail").textContent = `Version: ${version}`;
+  const major = parseInt(match[2], 10);
+
+  if (major < 18) {
+    document.getElementById("status").textContent = "Out of date";
+    document.getElementById("status").className = "bad";
+    document.getElementById("detail").textContent = `Reported iOS version: ${major}`;
   } else {
-    document.getElementById("result").textContent = "Not iOS";
-    document.getElementById("detail").textContent = "";
+    document.getElementById("status").textContent = "Up to date";
+    document.getElementById("status").className = "ok";
+    document.getElementById("detail").textContent = `Reported iOS version: ${major}`;
   }
 })();
 </script>
