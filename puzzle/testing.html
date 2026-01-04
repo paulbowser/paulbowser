@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Signal</title>
+<style>
+  body{
+    background:#000; color:#ccc;
+    font-family:system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+    padding:8vh 14px; text-align:center;
+  }
+  .wrap{max-width:760px;margin:0 auto;text-align:left}
+  .ok{color:#6f6;}
+  .bad{color:#f66;}
+  .box{
+    border:1px solid rgba(255,255,255,.15);
+    border-radius:12px;
+    padding:16px;
+    background:rgba(255,255,255,.04);
+    margin-top:14px;
+  }
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;}
+  input{
+    width:100%; padding:12px; border-radius:10px;
+    border:1px solid rgba(255,255,255,.18);
+    background:rgba(0,0,0,.35); color:#ccc; outline:none;
+    font-size:16px;
+  }
+  button{
+    margin-top:10px; padding:10px 14px; border-radius:10px;
+    border:1px solid rgba(255,255,255,.18);
+    background:rgba(255,255,255,.08); color:#ccc; font-size:16px;
+  }
+  .small{font-size:12px; opacity:.6; margin-top:14px; word-break:break-all;}
+  #phase17, #phase26 { display:none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1 id="status">Checking…</h1>
+  <div id="detail"></div>
+
+  <!-- Phase 17: set cookie -->
+  <div id="phase17" class="box">
+    <div class="mono" style="opacity:.8;">PHASE 17</div>
+    <h2 class="ok" style="margin:8px 0 10px;">Marked.</h2>
+    <p style="opacity:.9; margin:0;">
+      You’re now allowed to continue -- but not here.
+    </p>
+    <p style="opacity:.8; margin-top:10px;">
+      Update to iOS 26, then open this page again in Safari.
+    </p>
+  </div>
+
+  <!-- Phase 26: only show if cookie exists -->
+  <div id="phase26" class="box">
+    <div class="mono" style="opacity:.8;">PHASE 26</div>
+    <h2 class="ok" style="margin:8px 0 10px;">Complete the line.</h2>
+
+    <div class="mono" style="line-height:1.6; padding:10px 12px; border-radius:10px; border:1px solid rgba(255,255,255,.12);">
+      "I can be cracked, made, told, and played.<br>
+      What am I?"<br><br>
+      Answer with one word.
+    </div>
+
+    <div style="margin-top:12px;">
+      <input id="answer" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="one word…" />
+      <button id="submit">submit</button>
+      <div id="msg" style="margin-top:10px;"></div>
+      <div id="reveal" class="mono" style="display:none; margin-top:12px;"></div>
+    </div>
+  </div>
+
+  <div class="small" id="ua"></div>
+</div>
+
+<script>
+(function(){
+  const ua = navigator.userAgent || "";
+  document.getElementById("ua").textContent = ua;
+
+  // iOS Safari detection + Safari Version/
+  const isIOS = /iPhone|iPad|iPod/.test(ua);
+  const isSafari = /Safari\//.test(ua) && !/CriOS|FxiOS|EdgiOS/.test(ua);
+  const verMatch = ua.match(/Version\/(\d+(?:\.\d+)?)/);
+
+  const statusEl = document.getElementById("status");
+  const detailEl = document.getElementById("detail");
+
+  function normalize(s){ return (s||"").toLowerCase().replace(/[^a-z0-9]/g,""); }
+  function fail(title, detail){
+    statusEl.textContent = title;
+    statusEl.className = "bad";
+    detailEl.textContent = detail || "";
+  }
+
+  // Cookie helpers
+  const COOKIE_NAME = "marked_17";
+  function setCookie(name, value, days){
+    const maxAge = days * 24 * 60 * 60;
+    const secure = (location.protocol === "https:") ? "; Secure" : "";
+    document.cookie = `${name}=${encodeURIComponent(value)}; Max-Age=${maxAge}; Path=/; SameSite=Lax${secure}`;
+  }
+  function getCookie(name){
+    const needle = name + "=";
+    const parts = (document.cookie || "").split(";").map(s => s.trim());
+    for (const p of parts){
+      if (p.startsWith(needle)) return decodeURIComponent(p.slice(needle.length));
+    }
+    return null;
+  }
+
+  if (!isIOS || !isSafari || !verMatch){
+    fail("Unsupported browser", "Requires iOS Safari 17 (mark) or iOS Safari 26 (solve).");
+    return;
+  }
+
+  const safariVersion = parseFloat(verMatch[1]);
+  const major = Math.floor(safariVersion);
+
+  detailEl.textContent = `Safari Version: ${verMatch[1]}`;
+  statusEl.textContent = "Ready";
+  statusEl.className = "ok";
+
+  if (major === 17){
+    // Mark for 60 days (adjust as you like)
+    setCookie(COOKIE_NAME, "1", 60);
+    document.getElementById("phase17").style.display = "block";
+    return;
+  }
+
+  if (major === 26){
+    const marked = getCookie(COOKIE_NAME);
+    if (!marked){
+      fail("sorry, this isn’t for you", "You needed to visit this page on iOS 17 Safari first.");
+      return;
+    }
+
+    document.getElementById("phase26").style.display = "block";
+
+    // Puzzle answer: "joke"
+    const expected = "joke";
+    const answerEl = document.getElementById("answer");
+    const msgEl = document.getElementById("msg");
+    const revealEl = document.getElementById("reveal");
+
+    function check(){
+      const guess = normalize(answerEl.value);
+      if (!guess) return;
+
+      if (guess === expected){
+        msgEl.innerHTML = '<span class="ok">Correct.</span>';
+        revealEl.style.display = "block";
+        revealEl.textContent = "NEXT: look for the thing that changes when you rotate the screen.";
+      } else {
+        msgEl.innerHTML = '<span class="bad">Wrong.</span>';
+        revealEl.style.display = "none";
+      }
+    }
+
+    document.getElementById("submit").addEventListener("click", check);
+    answerEl.addEventListener("keydown", (e)=>{ if(e.key==="Enter") check(); });
+
+    return;
+  }
+
+  fail("Wrong era", "Visit on iOS Safari 17 first, then solve on iOS Safari 26.");
+})();
+</script>
+</body>
+</html>t
